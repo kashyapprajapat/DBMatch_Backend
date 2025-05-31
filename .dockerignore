@@ -1,0 +1,22 @@
+# Node modules & logs
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Env and config files
+.env
+sample.envfile
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git
+.gitignore
+
+# Documentation (optional)
+README.md
+
+# Local dev files
+*.local
