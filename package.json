@@ -1,0 +1,21 @@
+{
+  "name": "dbmatch-backend",
+  "version": "1.0.0",
+  "description": "Matches your project to the best database choice.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "kashyap prajapati",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@vinejs/vine": "^3.0.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
