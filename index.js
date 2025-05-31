@@ -6,12 +6,117 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import os from 'os';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json' assert { type: "json" };
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
 
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 7000;
 
+
+// Secure HTTP headers
+app.use(helmet());
+
+// Rate limiter 
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: {
+    error: 'Too many requests, please try again later.'
+  }
+});
+app.use(limiter);
+
+// 🚀 Slow down repeated requests instead of blocking immediately
+// so insted of blaking we alow down aggresive devs 👨🏻‍💻
+const speedLimiter = slowDown({
+  windowMs: 60 * 1000, // 1 minute
+  delayAfter: 3, // Allow 3 requests before slowing down
+  delayMs: () => 1000, // Add 1 second delay per request after the limit
+});
+app.use(speedLimiter);
+
+
+
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+
+app.get('/', (req, res) => {
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DBMatch API ⚙️</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2733/2733990.png" type="image/x-icon" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0; padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #eef2f7;
+      color: #2c3e50;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      max-width: 600px;
+    }
+    a {
+      color: #2980b9;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #1c5980;
+    }
+    .cta-button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      color: white;
+      background-color: #27ae60;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: #219150;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to DBMatch API ⚙️</h1>
+  <p>Your intelligent assistant for choosing the perfect database technology tailored to your product's needs.</p>
+  <p>Input your product details, and get practical, balanced, real-world database recommendations — no more guesswork.</p>
+  <p>To explore the API endpoints and documentation, head over to: <a href="/docs">/docs</a></p>
+  <button class="cta-button" onclick="window.location.href='/docs'">Get Started</button>
+  <div class="footer">
+    <p>Created with passion by database enthusiasts.</p>
+    <p>Questions or feedback? Contact us at <a href="mailto:prajapatikashyap14@gmail.com">prajapatikashyap14@gmail.com</a></p>
+  </div>
+</body>
+</html>`);
+});
+
 
 app.post('/recommend-database', async (req, res) => {
   try {
