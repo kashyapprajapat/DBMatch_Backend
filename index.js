@@ -9,11 +9,17 @@ import swaggerDocument from './swagger.json' assert { type: "json" };
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
+import cors from 'cors';
+
 
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 7000;
 
+
+app.use(cors({
+  origin: '*'
+}));  //…but it’s functionally the same as just: app.use(cors());
 
 // Secure HTTP headers
 app.use(helmet());
