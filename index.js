@@ -4,6 +4,8 @@ import vine from '@vinejs/vine';
 import schema from './validator.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import os from 'os';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const app = express();
 app.use(express.json());
@@ -115,5 +117,6 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT, () => console.log(`🚀 DBMatch Server running on Port No:${PORT}`));

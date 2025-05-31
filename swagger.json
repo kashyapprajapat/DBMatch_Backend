@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "DBMatch Backend API",
+    "version": "1.0.0",
+    "description": "API documentation for the DBMatch Backend project"
+  },
+  "paths": {
+    "/recommend-database": {
+      "post": {
+        "summary": "Get database recommendation based on product details",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productCategory": {
+                    "type": "string",
+                    "enum": [
+                      "E-commerce",
+                      "Food Delivery",
+                      "Social Networking",
+                      "Content Management / Blogging",
+                      "Finance / Banking",
+                      "Healthcare",
+                      "Gaming",
+                      "Education / E-learning",
+                      "Others"
+                    ],
+                    "example": "E-commerce"
+                  },
+                  "dataSize": {
+                    "type": "string",
+                    "enum": ["Small", "Medium", "Large"],
+                    "description": "Data size in the first year",
+                    "example": "Medium"
+                  },
+                  "initialUsers": {
+                    "type": "string",
+                    "enum": ["Less than 100", "100 to 1,000", "More than 1,000"],
+                    "example": "100 to 1,000"
+                  },
+                  "readWritePattern": {
+                    "type": "string",
+                    "enum": [
+                      "Mostly reading/viewing information",
+                      "Mostly writing/updating information",
+                      "Both reading and writing equally"
+                    ],
+                    "example": "Both reading and writing equally"
+                  },
+                  "schemaChangeFrequency": {
+                    "type": "string",
+                    "enum": ["Rarely or never", "Sometimes", "Frequently"],
+                    "example": "Sometimes"
+                  },
+                  "dataAccuracyImportance": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "description": "1 = not important, 10 = absolutely critical",
+                    "example": 8
+                  },
+                  "scalabilityImportance": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "example": 9
+                  },
+                  "budget": {
+                    "type": "string",
+                    "enum": ["Low", "Medium", "High"],
+                    "example": "Medium"
+                  },
+                  "userGeography": {
+                    "type": "string",
+                    "enum": ["Globally", "Locally"],
+                    "example": "Globally"
+                  },
+                  "latencyImportance": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "example": 7
+                  }
+                },
+                "required": [
+                  "productCategory",
+                  "dataSize",
+                  "initialUsers",
+                  "readWritePattern",
+                  "schemaChangeFrequency",
+                  "dataAccuracyImportance",
+                  "scalabilityImportance",
+                  "budget",
+                  "userGeography",
+                  "latencyImportance"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Database recommendation returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recommendation": {
+                      "type": "string",
+                      "example": "- 🧠 **Recommended Database:** PostgreSQL  \n- 📄 **Summary:** PostgreSQL is a reliable relational database well suited for e-commerce with strong consistency and flexible schema support."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed or AI request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Validation failed or AI request error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ping": {
+      "get": {
+        "summary": "Simple ping-pong endpoint",
+        "responses": {
+          "200": {
+            "description": "Pong response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "pong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Returns system health and stats",
+        "responses": {
+          "200": {
+            "description": "Health data returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "system": {
+                      "type": "object",
+                      "properties": {
+                        "uptime": {
+                          "type": "string",
+                          "example": "17 minutes"
+                        },
+                        "cpuLoadAvg": {
+                          "type": "object",
+                          "properties": {
+                            "1min": { "type": "string", "example": "0.42" },
+                            "5min": { "type": "string", "example": "0.30" },
+                            "15min": { "type": "string", "example": "0.25" }
+                          }
+                        },
+                        "memory": {
+                          "type": "object",
+                          "properties": {
+                            "usedMB": { "type": "string", "example": "123.45" },
+                            "totalMB": { "type": "string", "example": "2048.00" },
+                            "freeMB": { "type": "string", "example": "500.00" }
+                          }
+                        },
+                        "processMemoryMB": {
+                          "type": "object",
+                          "properties": {
+                            "rss": { "type": "string", "example": "150.34" },
+                            "heapTotal": { "type": "string", "example": "120.50" },
+                            "heapUsed": { "type": "string", "example": "100.25" }
+                          }
+                        },
+                        "platform": {
+                          "type": "string",
+                          "example": "linux"
+                        },
+                        "arch": {
+                          "type": "string",
+                          "example": "x64"
+                        },
+                        "cores": {
+                          "type": "integer",
+                          "example": 8
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
