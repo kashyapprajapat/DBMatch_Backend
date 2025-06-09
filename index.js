@@ -21,9 +21,18 @@ app.use(express.json());
 const PORT = process.env.PORT || 7000;
 
 
+const allowedOrigins = ['https://dbmatch.vercel.app', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: '*'
-}));  //…but it’s functionally the same as just: app.use(cors());
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 
 // Secure HTTP headers
 app.use(helmet());
