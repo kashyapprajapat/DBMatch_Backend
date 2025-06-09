@@ -10,6 +10,10 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
 import cors from 'cors';
+import arcjet, { detectBot } from "@arcjet/node";
+import { isSpoofedBot } from "@arcjet/inspect";
+
+
 
 
 const app = express();
@@ -42,6 +46,18 @@ const speedLimiter = slowDown({
   delayMs: () => 1000, // Add 1 second delay per request after the limit
 });
 app.use(speedLimiter);
+
+//Arcjet Bot detaction
+const aj = arcjet({
+  key: process.env.ARCJET_KEY,
+  characteristics: ["ip.src"],
+  rules: [
+    detectBot({
+      mode: "LIVE", // Use "DRY_RUN" for testing
+      allow: ["CATEGORY:SEARCH_ENGINE"],
+    }),
+  ],
+});
 
 
 
@@ -125,6 +141,20 @@ app.get('/', (req, res) => {
 
 
 app.post('/recommend-database', async (req, res) => {
+    const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    if (decision.reason.isBot()) {
+      return res.status(403).json({ error: 'Bot access denied 🚫' });
+    } else {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+
+  if (decision.results.some(isSpoofedBot)) {
+    return res.status(403).json({ error: 'Spoofed bot blocked' });
+  }
+  
   try {
     // Validate request body
     const validator = vine.compile(schema);

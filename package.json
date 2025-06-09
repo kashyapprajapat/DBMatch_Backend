@@ -13,6 +13,8 @@
   "author": "kashyap prajapati",
   "license": "ISC",
   "dependencies": {
+    "@arcjet/inspect": "^1.0.0-beta.8",
+    "@arcjet/node": "^1.0.0-beta.8",
     "@google/generative-ai": "^0.24.1",
     "@vinejs/vine": "^3.0.1",
     "cors": "^2.8.5",
